@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <p>Please Login to get authorization code to operate ...</p>
+    <form action="/api/login" method="post">      
+
+      <div>
+          <table>
+            <tr>
+                <td>Username</td>
+                <td><input type="input" name="username" id="username" value="" maxlength="16" /></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="password" name="password" id="password" value="" maxlength="16" /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Enviar" id="enviar" name="enviar">                    
+                </td>
+            </tr>
+      </div>
+    </form>
+  </body>
+</html>
