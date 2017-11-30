@@ -116,7 +116,8 @@ exports.authorization = [
       });
     }),
     function(req, res){
-      res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
+        res.json( { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client } );
+        //res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
     }
 ]
 

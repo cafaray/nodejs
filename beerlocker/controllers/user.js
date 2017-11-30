@@ -1,5 +1,5 @@
 var request = require('http');
-
+var formData = require('form-data');
 // Load required packages
 var User = require('../models/user');
 var Client = require('../models/client');
@@ -41,17 +41,56 @@ exports.authenticate = function(req, res) {
                         res.json("{error: Impossible get a valid app }");
                     console.log(client);
                     // localhost:3000/api/oauth2/authorize?client_id=01110111&response_type=code&redirect_uri=http://localhost:30008
-                    var url = 'api/oauth/token';
-                    var auth = {username: 'cafaray', password: '654321'};
-                    var form = {grant_type: 'client_credentials' };
-                    request.get( { url: url, auth: auth, form: form, method: 'post' }, function(err, res) {
-                        if (err){
-                            console.log('Error identified at:' + err);
-                            return;
-                        }
-                        var json = JSON.parse(res.body);
-                        console.log("Access Token:", json.access_token);
-                      });
+
+
+                    var options = {
+                        host: 'localhost',
+                        port: 3000,
+                        path: '/api/oauth2/authorize?client_id=01110111&response_type=code&redirect_uri=http://localhost:3000',
+                        auth: 'cafaray' + ':' + '654321'
+                    };
+
+                    mess = request.get(options, function(res){
+                        var body = "";
+                        res.on('data', function(data) {
+                            body += data;
+                        });
+                        res.on('end', function() {
+                            console.log(body);
+                            var obj = JSON.parse(body);
+                            console.log("Transaction: " + obj.transactionID);
+                            var form = new FormData({ maxDataSize: 20971520 });
+                            form.append('transaction_id', myTansId);
+                            
+                            var newOptions = {
+                                host: 'localhost',
+                                port: 3000,
+                                method: 'post',
+                                path: '/api/oauth2/authorize',
+                                auth: 'cafaray' + ':' + '654321',                                
+                            }
+                            req = request.request(newOptions);
+                            form.pipe(req);
+                            req.on('response', function(res) {
+                                console.log(res.statusCode);
+                            });
+                        })
+                        res.on('error', function(e) {
+                            console.log("Got error: " + e.message);
+                        });
+                    });
+
+                    //var url = 'http://localhost:3000/api/oauth2/token';
+                    //var auth = { username: 'cafaray', password: '654321'};
+                    //var form = { grant_type: 'client_credentials' };
+                    //request.get(url , function(err, res, body) {
+                    //    if (err){
+                    //        console.log('Error identified at:' + err);
+                    //        return;
+                    //    }
+                    //    var json = JSON.parse(res.body);
+                    //    console.log("Access Token:", json.access_token);
+                    //  });
                     /*
                     var url = "http://localhost:3000/api/oauth2/authorize?client_id=01110111&response_type=code&redirect_uri=http://localhost:3000";
                     request.get(url, function(err, contents) {
